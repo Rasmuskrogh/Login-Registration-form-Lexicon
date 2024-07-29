@@ -1,40 +1,43 @@
-dbUsers = [];
-
-const registrationName = document.querySelector("#name");
-const registrationUsername = document.querySelector("#username");
-const registrationEmail = document.querySelector("#email");
-const registrationPassword = document.querySelector("#password");
-const registrationRepeat = document.querySelector("#repeat");
-const registrationButton = document.querySelector("#regBtn");
 const registrationForm = document.querySelector("#regForm");
+const users = JSON.parse(localStorage.getItem("users")) || [];
 
 registrationForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
   try {
     if (
-      !registrationEmail.value &&
-      !registrationName.value &&
-      !registrationPassword.value &&
-      !registrationRepeat.value &&
-      !registrationUsername.value
+      !e.target.email.value &&
+      !e.target.name.value &&
+      !e.target.password.value &&
+      !e.target.repeat.value &&
+      !e.target.username.value
     ) {
       throw new Error("Please make sure all fields are filled correctly");
-    } else if (registrationPassword.value !== registrationRepeat.value) {
+    } else if (e.target.password.value !== e.target.repeat.value) {
       throw new Error("The password and the repeat password don't match");
-    } else if (registrationPassword.value.length < 8) {
+    } else if (e.target.password.value.length < 8) {
       throw new Error("The password must be at least 8 characters long!");
-    } else if (registrationUsername.value !== registrationName.value) {
-      console.log("hallihallå");
+    } else if (
+      users.some((user) => user.username === e.target.username.value)
+    ) {
+      throw new Error(
+        "This username already exists please choose a different one."
+      );
+    } else if (users.some((user) => user.email === e.target.email.value)) {
+      throw new Error(
+        "A user with this email already exists. Please log in to your existing account."
+      );
     } else {
       console.log("siuper diuper!");
       const registrationData = {
-        name: registrationName.value,
-        username: registrationUsername.value,
-        email: registrationEmail.value,
-        password: registrationPassword.value,
+        name: e.target.name.value,
+        username: e.target.username.value,
+        email: e.target.email.value,
+        password: e.target.password.value,
       };
-      console.log(registrationData);
+      users.push(registrationData);
+      console.log("users", users);
+      localStorage.setItem("users", JSON.stringify(users));
     }
   } catch (error) {
     console.log(error);
