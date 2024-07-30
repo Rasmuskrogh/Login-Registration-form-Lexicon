@@ -1,4 +1,5 @@
 const registrationForm = document.querySelector("#regForm");
+const regButton = document.querySelector("#regButton");
 const users = JSON.parse(localStorage.getItem("users")) || [];
 
 registrationForm.addEventListener("submit", (e) => {
@@ -40,6 +41,12 @@ registrationForm.addEventListener("submit", (e) => {
       localStorage.setItem("users", JSON.stringify(users));
     }
   } catch (error) {
-    console.log(error);
+    if (errorMessage !== null) {
+      errorMessage.remove();
+    }
+    let errorMessage = document.createElement("h5");
+    errorMessage.innerText = error;
+    errorMessage.style.color = "red";
+    registrationForm.insertBefore(errorMessage, regButton);
   }
 });
